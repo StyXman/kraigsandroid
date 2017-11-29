@@ -237,6 +237,7 @@ public final class AlarmClockProvider extends ContentProvider {
     public static final String NAME = "name";
     public static final String DAY_OF_WEEK = "dow";
     public static final String NEXT_SNOOZE = "next_snooze";
+    public static final String NEXT_WAKEUP = "next_wakeup";
   }
 
   public static class SettingsEntry implements BaseColumns {

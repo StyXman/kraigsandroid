@@ -83,9 +83,7 @@ public class AlarmNotificationActivity extends Activity {
         new View.OnClickListener() {
           @Override
           public void onClick(View view) {
-            AlarmNotificationService.snoozeAllAlarms(
-                getApplicationContext(),
-                TimeUtil.nextMinute(snooze).getTimeInMillis());
+            AlarmNotificationService.snoozeAllAlarms(getApplicationContext(), snooze);
             finish();
           }
         });

@@ -126,6 +126,7 @@ public class AlarmNotificationService extends Service {
   public int onStartCommand(Intent i, int flags, int startId) {
     long alarmid;
     long ts;
+    int snooze;
 
     // NOTE: The service should continue running while there are any active
     // alarms.
@@ -138,8 +139,8 @@ public class AlarmNotificationService extends Service {
       stopSelf();
       return START_NOT_STICKY;
     case SNOOZE_ALL:
-      ts = i.getLongExtra(TIME_UTC, -1);
-      snoozeAll(ts);
+      snooze = i.getIntExtra(TIME_UTC, -1);
+      snoozeAll(snooze);
       stopSelf();
       return START_NOT_STICKY;
     case SCHEDULE_TRIGGER:
@@ -270,7 +271,7 @@ public class AlarmNotificationService extends Service {
     refreshNotifyBar();
   }
 
-  private void snoozeAll(long snoozeUTC) {
+  private void snoozeAll(int snooze) {
     if (activeAlarms == null) {
       Log.w(TAG, "No active alarms when snoozed");
       return;
@@ -278,21 +279,22 @@ public class AlarmNotificationService extends Service {
 
     for (long alarmid : activeAlarms.alarmids) {
       ContentValues v = new ContentValues();
-      v.put(AlarmClockProvider.AlarmEntry.NEXT_SNOOZE, snoozeUTC);
+      v.put(AlarmClockProvider.AlarmEntry.NEXT_SNOOZE,
+            TimeUtil.nextMinute(snooze).getTimeInMillis());
       int r = getContentResolver().update(
           ContentUris.withAppendedId(AlarmClockProvider.ALARMS_URI, alarmid),
           v, null, null);
       if (r < 1) {
         Log.e(TAG, "Failed to snooze " + alarmid);
       }
-      scheduleTrigger(alarmid, snoozeUTC);
+      scheduleTrigger(alarmid, snooze);
     }
 
     activeAlarms.alarmids.clear();
     refreshNotifyBar();
   }
 
-  private void scheduleTrigger(long alarmid, long tsUTC) {
+  private void scheduleTrigger(long alarmid, long snooze) {
     // Intents are considered equal if they have the same action, data, type,
     // class, and categories.  In order to schedule multiple alarms, every
     // pending intent must be different.  This means that we must encode
@@ -301,8 +303,21 @@ public class AlarmNotificationService extends Service {
         this, (int)alarmid, new Intent(this, AlarmTriggerReceiver.class)
         .putExtra(ALARM_ID, alarmid), 0);
 
+    DbUtil.Alarm alarm = DbUtil.Alarm.get(this, alarmid);
+    if (alarm.next_wakeup == 0) {
+        alarm.next_wakeup = alarm.time + snooze;
+    } else {
+        alarm.next_wakeup += snooze;
+    }
+
+    ContentValues val = new ContentValues();
+    val.put(AlarmClockProvider.AlarmEntry.NEXT_WAKEUP, alarm.next_wakeup);
+    getContentResolver().update(
+        ContentUris.withAppendedId(AlarmClockProvider.ALARMS_URI, alarmid),
+        val, null, null);
+
     ((AlarmManager)getSystemService(Context.ALARM_SERVICE))
-        .setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, tsUTC, schedule);
+        .setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarm.next_wakeup, schedule);
     refreshNotifyBar();
   }
 
@@ -330,7 +345,9 @@ public class AlarmNotificationService extends Service {
                        AlarmClockProvider.AlarmEntry.ENABLED,
                        AlarmClockProvider.AlarmEntry.NAME,
                        AlarmClockProvider.AlarmEntry.DAY_OF_WEEK,
-                       AlarmClockProvider.AlarmEntry.NEXT_SNOOZE },
+                       AlarmClockProvider.AlarmEntry.NEXT_SNOOZE,
+                       AlarmClockProvider.AlarmEntry.NEXT_WAKEUP
+                       },
         AlarmClockProvider.AlarmEntry.ENABLED + " == 1",
         null, null);
 

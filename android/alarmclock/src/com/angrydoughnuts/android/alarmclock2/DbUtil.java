@@ -27,6 +27,7 @@ public class DbUtil {
     public final String label;
     public final int repeat;
     public final long next_snooze;
+    public long next_wakeup;
 
     public static Alarm get(Context context, long id) {
       Alarm s = null;
@@ -37,7 +38,9 @@ public class DbUtil {
             AlarmClockProvider.AlarmEntry.ENABLED,
             AlarmClockProvider.AlarmEntry.NAME,
             AlarmClockProvider.AlarmEntry.DAY_OF_WEEK,
-            AlarmClockProvider.AlarmEntry.NEXT_SNOOZE },
+            AlarmClockProvider.AlarmEntry.NEXT_SNOOZE,
+            AlarmClockProvider.AlarmEntry.NEXT_WAKEUP
+            },
           null, null, null);
       if (c.moveToFirst())
         s = new Alarm(c);
@@ -48,14 +51,12 @@ public class DbUtil {
     }
 
     public Alarm(Cursor c) {
-      time = c.getInt(c.getColumnIndex(AlarmClockProvider.AlarmEntry.TIME));
-      enabled = c.getInt(c.getColumnIndex(
-          AlarmClockProvider.AlarmEntry.ENABLED)) != 0;
-      label = c.getString(c.getColumnIndex(AlarmClockProvider.AlarmEntry.NAME));
-      repeat = c.getInt(c.getColumnIndex(
-          AlarmClockProvider.AlarmEntry.DAY_OF_WEEK));
-      next_snooze = c.getLong(c.getColumnIndex(
-          AlarmClockProvider.AlarmEntry.NEXT_SNOOZE));
+      time        = c.getInt(c.getColumnIndex(AlarmClockProvider.AlarmEntry.TIME));
+      enabled     = c.getInt(c.getColumnIndex(AlarmClockProvider.AlarmEntry.ENABLED)) != 0;
+      label       = c.getString(c.getColumnIndex(AlarmClockProvider.AlarmEntry.NAME));
+      repeat      = c.getInt(c.getColumnIndex(AlarmClockProvider.AlarmEntry.DAY_OF_WEEK));
+      next_snooze = c.getLong(c.getColumnIndex(AlarmClockProvider.AlarmEntry.NEXT_SNOOZE));
+      next_wakeup = c.getInt(c.getColumnIndex(AlarmClockProvider.AlarmEntry.NEXT_WAKEUP));
     }
 
     private Alarm() {
@@ -64,6 +65,7 @@ public class DbUtil {
       label = "Not found";
       repeat = 0;
       next_snooze = 0;
+      next_wakeup = 0;
     }
   }
 
