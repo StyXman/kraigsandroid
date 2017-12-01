@@ -255,7 +255,7 @@ public final class AlarmClockProvider extends ContentProvider {
 
   private static class DbAlarmClockHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "alarmclock";
-    private static final int DB_VERSION = 2;
+    private static final int DB_VERSION = 3;
 
     public DbAlarmClockHelper(Context context) {
       super(context, DB_NAME, null, DB_VERSION);
@@ -274,7 +274,8 @@ public final class AlarmClockProvider extends ContentProvider {
           AlarmEntry.ENABLED + " UNSIGNED INTEGER (0, 1)," +
           AlarmEntry.NAME + " TEXT, " +
           AlarmEntry.DAY_OF_WEEK + " UNSIGNED INTEGER (0, 127)," +
-          AlarmEntry.NEXT_SNOOZE + " UNSIGNED INTEGER DEFAULT 0)");
+          AlarmEntry.NEXT_SNOOZE + " UNSIGNED INTEGER DEFAULT 0," +
+          AlarmEntry.NEXT_WAKEUP + " UNSIGNED INTEGER DEFAULT 0)");
 
       // |(primary) | (string) | (string)  | (1 to 60) | (boolean) | (0 to 100) | (0 to 100) | (0 to 60) |
       // |   id     | tone_url | tone_name |   snooze  |  vibrate  |  vol_start |  vol_end   | vol_time  |
@@ -301,6 +302,13 @@ public final class AlarmClockProvider extends ContentProvider {
             "ALTER TABLE " + AlarmEntry.TABLE_NAME + " ADD COLUMN " +
             AlarmEntry.NEXT_SNOOZE + " UNSIGNED INTEGER DEFAULT 0");
       }
+
+      if (oldVersion < 3) {
+        db.execSQL(
+            "ALTER TABLE " + AlarmEntry.TABLE_NAME + " ADD COLUMN " +
+            AlarmEntry.NEXT_WAKEUP + " UNSIGNED INTEGER DEFAULT 0");
+      }
+
       // Application versions 1.x stored default alarm settings in row
       // id -1.  Since UriMatcher can only match positive numbers, this
       // data is now stored in row id Long.MAX_VALUE.  This move the row.
