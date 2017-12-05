@@ -25,6 +25,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.KeyEvent;
 import android.widget.TextView;
 
 public class AlarmNotificationActivity extends Activity {
@@ -138,5 +139,14 @@ public class AlarmNotificationActivity extends Activity {
         .setPositiveButton(R.string.ok, null)
         .create();
     }
+  }
+
+  @Override
+  public boolean onKeyDown(int keyCode, KeyEvent event) {
+    // any key sends us into snooze
+    AlarmNotificationService.snoozeAllAlarms(getApplicationContext(), snooze);
+    finish();
+
+    return false;
   }
 }
