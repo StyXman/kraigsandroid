@@ -30,8 +30,7 @@ import android.widget.TextView;
 public class AlarmNotificationActivity extends Activity {
   public static final String TIMEOUT = "timeout";
 
-  private static final String TAG =
-    AlarmNotificationActivity.class.getSimpleName();
+  private static final String TAG = AlarmNotificationActivity.class.getSimpleName();
 
   private int snooze;
 
