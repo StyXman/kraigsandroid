@@ -17,11 +17,14 @@ package com.angrydoughnuts.android.alarmclock;
 
 import android.content.Context;
 import android.text.format.DateFormat;
+import android.util.Log;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class TimeUtil {
+  private static final String TAG = TimeUtil.class.getSimpleName();
+
   public static Calendar nextOccurrence(int secondsPastMidnight, int repeat) {
     return nextOccurrence(Calendar.getInstance(), secondsPastMidnight, repeat);
   }
@@ -117,6 +120,7 @@ public class TimeUtil {
   }
 
   public static Calendar nextMinute(int minutes) {
+    Log.i(TAG, "next minute: " + minutes);
     return nextMinute(Calendar.getInstance(), minutes);
   }
 
@@ -129,6 +133,7 @@ public class TimeUtil {
     then.set(Calendar.SECOND, 0);
     then.set(Calendar.MILLISECOND, 0);
     then.add(Calendar.MINUTE, minutes);
+    Log.i(TAG, "next minute: " + then.toString());
     return then;
   }
 

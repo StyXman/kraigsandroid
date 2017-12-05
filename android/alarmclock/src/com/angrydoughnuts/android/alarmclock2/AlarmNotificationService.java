@@ -279,6 +279,7 @@ public class AlarmNotificationService extends Service {
 
     for (long alarmid : activeAlarms.alarmids) {
       ContentValues v = new ContentValues();
+      Log.i(TAG, "Snnozing " + alarmid);
       v.put(AlarmClockProvider.AlarmEntry.NEXT_SNOOZE,
             TimeUtil.nextMinute(snooze).getTimeInMillis());
       int r = getContentResolver().update(
@@ -305,10 +306,13 @@ public class AlarmNotificationService extends Service {
 
     DbUtil.Alarm alarm = DbUtil.Alarm.get(this, alarmid);
     if (alarm.next_wakeup == 0) {
+        Log.i(TAG, "time: " + alarm.time + "; snooze: " + snooze );
         alarm.next_wakeup = alarm.time + snooze;
     } else {
+        Log.i(TAG, "next_wakeup: " + alarm.next_wakeup + "; snooze:" + snooze);
         alarm.next_wakeup += snooze;
     }
+    Log.i(TAG, "next_wakeup: " + alarm.next_wakeup);
 
     ContentValues val = new ContentValues();
     val.put(AlarmClockProvider.AlarmEntry.NEXT_WAKEUP, alarm.next_wakeup);
