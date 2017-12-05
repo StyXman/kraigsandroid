@@ -21,6 +21,7 @@ import android.util.Log;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import android.util.Log;
 
 public class TimeUtil {
   private static final String TAG = TimeUtil.class.getSimpleName();
@@ -116,19 +117,22 @@ public class TimeUtil {
   }
 
   public static Calendar nextMinute() {
+    Log.i(TAG, "next minute()");
     return nextMinute(Calendar.getInstance());
   }
 
   public static Calendar nextMinute(int minutes) {
-    Log.i(TAG, "next minute: " + minutes);
+    Log.i(TAG, "next minute(int): " + minutes);
     return nextMinute(Calendar.getInstance(), minutes);
   }
 
   public static Calendar nextMinute(Calendar now) {
+    Log.i(TAG, "next minute(Calendar): " + now.toString());
     return nextMinute(now, 1);
   }
 
   public static Calendar nextMinute(Calendar now, int minutes) {
+    Log.i(TAG, "next minute(Calendar, int): " + now.toString() + ", " + minutes);
     Calendar then = (Calendar)now.clone();
     then.set(Calendar.SECOND, 0);
     then.set(Calendar.MILLISECOND, 0);

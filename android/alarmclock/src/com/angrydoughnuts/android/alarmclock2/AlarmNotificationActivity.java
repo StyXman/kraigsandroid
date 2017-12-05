@@ -31,8 +31,7 @@ import android.widget.TextView;
 public class AlarmNotificationActivity extends Activity {
   public static final String TIMEOUT = "timeout";
 
-  private static final String TAG =
-    AlarmNotificationActivity.class.getSimpleName();
+  private static final String TAG = AlarmNotificationActivity.class.getSimpleName();
 
   private int snooze;
 
@@ -51,8 +50,10 @@ public class AlarmNotificationActivity extends Activity {
     // Pull snooze from saved state or options database.
     if (state != null && state.containsKey("snooze")) {
       snooze = state.getInt("snooze");
+      Log.i(TAG, "snooze from state: " + snooze);
     } else {
       snooze = DbUtil.Settings.get(this, alarmid).snooze;
+      Log.i(TAG, "snooze from settings: " + snooze);
     }
 
     final TextView snooze_text = (TextView)findViewById(R.id.snooze_text);
