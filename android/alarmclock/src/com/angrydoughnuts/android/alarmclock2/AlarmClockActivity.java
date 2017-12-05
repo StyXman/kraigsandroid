@@ -60,8 +60,7 @@ public class AlarmClockActivity extends Activity {
     setContentView(R.layout.alarm_list);
 
     // Map AlarmEntry fields to list view item views.
-    final ResourceCursorAdapter adapter = new ResourceCursorAdapter(
-        this, R.layout.alarm_list_item, null, 0) {
+    final ResourceCursorAdapter adapter = new ResourceCursorAdapter(this, R.layout.alarm_list_item, null, 0) {
         @Override
         public void bindView(View v, Context context, Cursor c) {
           final int secondsPastMidnight =

@@ -206,8 +206,7 @@ public final class AlarmClockProvider extends ContentProvider {
     }
   }
 
-  private static final String AUTHORITY =
-    "com.angrydoughnuts.android.alarmclock.provider";
+  private static final String AUTHORITY = "com.angrydoughnuts.android.alarmclock.provider";
   private static final int ALARMS = 1;
   private static final int ALARM_ID = 2;
   private static final int SETTINGS_ID = 3;

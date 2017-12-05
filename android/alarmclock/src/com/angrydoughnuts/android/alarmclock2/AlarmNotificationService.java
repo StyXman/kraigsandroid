@@ -261,8 +261,7 @@ public class AlarmNotificationService extends Service {
         Log.e(TAG, "Failed to dismiss " + alarmid);
       }
       if (a.repeat != 0) {
-        final long nextUTC =
-          TimeUtil.nextOccurrence(a.time, a.repeat).getTimeInMillis();
+        final long nextUTC = TimeUtil.nextOccurrence(a.time, a.repeat).getTimeInMillis();
         AlarmNotificationService.scheduleAlarmTrigger(this, alarmid, nextUTC);
       }
     }
@@ -376,6 +375,7 @@ public class AlarmNotificationService extends Service {
       final DbUtil.Alarm a = new DbUtil.Alarm(c);
       final Calendar n =
         TimeUtil.nextOccurrence(now, a.time, a.repeat, a.next_snooze);
+
       if (next == null || n.before(next)) {
         next = n;
         next_label = a.label;
